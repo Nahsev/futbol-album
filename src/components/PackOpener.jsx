@@ -7,7 +7,7 @@ import { Package, Sparkles, Coins, Gem, Eye, CheckCircle2, RotateCcw, HelpCircle
 import confetti from 'canvas-confetti';
 
 export default function PackOpener() {
-  const { openBoosterPack, coins, gems, glueSticker, gluedStickers, sellDuplicateCard, poolSize, poolCounts } = useAlbum();
+  const { openBoosterPack, coins, gems, glueSticker, gluedStickers, sellDuplicateCard, poolSize, poolCounts, ready } = useAlbum();
   const [openingPack, setOpeningPack] = useState(false);
   const [revealedCards, setRevealedCards] = useState(null);
   const [flippedMap, setFlippedMap] = useState({});
@@ -106,7 +106,7 @@ export default function PackOpener() {
           className="mt-3 text-[11px] text-cyan-400 hover:text-cyan-300 font-mono underline flex items-center justify-center gap-1 mx-auto cursor-pointer"
         >
           <HelpCircle size={13} />
-          <span>Ver tirada limitada ({poolSize}/{TOTAL_SUPPLY} cartas en sobres)</span>
+          <span>Ver tirada limitada ({ready ? poolSize : '—'}/{TOTAL_SUPPLY} cartas en sobres)</span>
         </button>
       </div>
 
@@ -267,8 +267,8 @@ export default function PackOpener() {
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <span className={`font-mono text-[11px] ${left === 0 ? 'text-red-400' : 'text-emerald-300'}`}>
-                        {left === 0 ? 'AGOTADA' : `Quedan ${left}/${range.supply}`}
+                      <span className={`font-mono text-[11px] ${!ready ? 'text-gray-500' : left === 0 ? 'text-red-400' : 'text-emerald-300'}`}>
+                        {!ready ? `— /${range.supply}` : left === 0 ? 'AGOTADA' : `Quedan ${left}/${range.supply}`}
                       </span>
                       <span className="text-amber-300 font-mono text-[11px]">+{r.sellValue}</span>
                     </div>

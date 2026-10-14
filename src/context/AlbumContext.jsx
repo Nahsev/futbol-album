@@ -121,6 +121,7 @@ export function AlbumProvider({ children }) {
   return (
     <AlbumContext.Provider value={{
       loading: !state && !apiError,
+      ready: !!state,
       apiError,
       clearApiError: () => setApiError(null),
       coins,
