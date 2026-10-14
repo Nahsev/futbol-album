@@ -13,8 +13,11 @@ let clientPromise = null;
 let seeded = false;
 
 async function getDb() {
-  const uri = process.env.MONGODB_URI;
+  const uri = cleanUri(process.env.MONGODB_URI);
   if (!uri) throw httpError(500, 'Falta configurar MONGODB_URI (cadena de conexión de MongoDB Atlas).');
+  if (!/^mongodb(\+srv)?:\/\//.test(uri)) {
+    throw httpError(500, `MONGODB_URI está mal cargada: tiene que empezar con "mongodb+srv://" y empieza con "${uri.slice(0, 12)}…".`);
+  }
   if (!clientPromise) {
     clientPromise = new MongoClient(uri).connect().catch(err => { clientPromise = null; throw err; });
   }
@@ -22,6 +25,15 @@ async function getDb() {
   const db = client.db(process.env.MONGODB_DB || 'futbol_album');
   await ensureSeed(db);
   return db;
+}
+
+// Tolera errores comunes al pegar la variable: "MONGODB_URI=...", comillas, espacios
+function cleanUri(raw) {
+  if (!raw) return '';
+  let v = String(raw).trim();
+  v = v.replace(/^MONGODB_URI\s*=\s*/i, '').trim();
+  v = v.replace(/^['"]|['"]$/g, '').trim();
+  return v;
 }
 
 function httpError(status, message) {
