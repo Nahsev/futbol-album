@@ -22,7 +22,7 @@ export default function AlbumView() {
     let isMounted = true;
     async function loadLeagueTeams() {
       setIsLoadingApi(true);
-      const apiTeams = await fetchTeamsForLeague(selectedLeagueId);
+      const apiTeams = await fetchTeamsForLeague(selectedLeagueId, LOCAL_CLUBS);
       
       if (isMounted) {
         if (apiTeams && apiTeams.length > 0) {

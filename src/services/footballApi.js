@@ -9,7 +9,7 @@ const LEAGUE_MAP = {
   seriea: { id: '4332', name: 'Italian Serie A', defaultLogo: 'https://www.thesportsdb.com/images/media/league/badge/t06nfs1688647970.png' },
   bundesliga: { id: '4331', name: 'German Bundesliga', defaultLogo: 'https://www.thesportsdb.com/images/media/league/badge/eb6eor1688647935.png' },
   ligue1: { id: '4334', name: 'French Ligue 1', defaultLogo: 'https://www.thesportsdb.com/images/media/league/badge/8mvtik1688648011.png' },
-  lfp: { id: '4351', name: 'Argentine Primera Division', defaultLogo: 'https://www.thesportsdb.com/images/media/league/badge/r1d8m91688648074.png' }
+  lfp: { id: '4351', name: 'Argentinian Primera Division', defaultLogo: 'https://www.thesportsdb.com/images/media/league/badge/r1d8m91688648074.png' }
 };
 
 const apiCache = {};
@@ -24,36 +24,42 @@ const PLAYER_PHOTOS_POOL = [
   'https://images.unsplash.com/photo-1518091043644-c1d4457512c6?w=400&auto=format&fit=crop&q=80'
 ];
 
-export async function fetchTeamsForLeague(leagueKey) {
+// Equipos de una liga. Con la clave gratis, lookup_all_teams por ID devuelve
+// siempre una liga de demo, así que buscamos por nombre de liga (search_all_teams).
+// Los clubes del álbum (coleccionables en los sobres) van primero con su escudo real;
+// después el resto de los equipos de la liga que devuelve la API.
+export async function fetchTeamsForLeague(leagueKey, localClubs = []) {
   if (apiCache[leagueKey]) return apiCache[leagueKey];
 
   const leagueInfo = LEAGUE_MAP[leagueKey] || LEAGUE_MAP.laliga;
+  const ownClubs = localClubs.filter(c => c.leagueId === leagueKey);
+  const ownIds = new Set(ownClubs.map(c => String(c.sportsDbId)));
 
+  let apiTeams = [];
   try {
-    const url = `${THESPORTSDB_BASE}/lookup_all_teams.php?id=${leagueInfo.id}`;
+    const url = `${THESPORTSDB_BASE}/search_all_teams.php?l=${encodeURIComponent(leagueInfo.name.replace(/ /g, '_'))}`;
     const response = await fetch(url);
     if (!response.ok) throw new Error("API network error");
-
     const data = await response.json();
-    if (!data.teams || !data.teams.length) return null;
-
-    const formattedTeams = data.teams.slice(0, 12).map(t => ({
-      id: `team-${t.idTeam}`,
-      name: t.strTeam,
-      badge: t.strBadge || t.strLogo || t.strTeamBadge || leagueInfo.defaultLogo,
-      teamPhoto: t.strFanart1 || t.strTeamFanart1 || t.strBadge || '',
-      stadium: t.strStadium || '',
-      established: t.intFormedYear || '1900',
-      leagueId: leagueKey,
-      rawTeamId: t.idTeam
-    }));
-
-    apiCache[leagueKey] = formattedTeams;
-    return formattedTeams;
+    apiTeams = (data.teams || [])
+      .filter(t => t.strLeague === leagueInfo.name && !ownIds.has(String(t.idTeam)))
+      .map(t => ({
+        id: `team-${t.idTeam}`,
+        name: t.strTeam,
+        badge: t.strBadge || t.strLogo || leagueInfo.defaultLogo,
+        teamPhoto: t.strFanart1 || '',
+        stadium: t.strStadium || '',
+        established: t.intFormedYear || '1900',
+        leagueId: leagueKey,
+        rawTeamId: t.idTeam
+      }));
   } catch (err) {
     console.warn("TheSports API fetch teams error:", err);
-    return null;
   }
+
+  const result = [...ownClubs, ...apiTeams];
+  if (apiTeams.length) apiCache[leagueKey] = result;
+  return result.length ? result : null;
 }
 
 export async function fetchPlayersForTeam(teamId, teamName) {

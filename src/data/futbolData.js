@@ -13,33 +13,33 @@ export const LEAGUES = [
 
 export const CLUBS = [
   // Premier League
-  { id: 'mcfc', name: 'Manchester City', leagueId: 'premier', badge: '🩵', primaryColor: '#6CABDD' },
-  { id: 'afc', name: 'Arsenal FC', leagueId: 'premier', badge: '🔴', primaryColor: '#EF0107' },
-  { id: 'lfc', name: 'Liverpool FC', leagueId: 'premier', badge: '🔴', primaryColor: '#C8102E' },
-  { id: 'mufc', name: 'Manchester United', leagueId: 'premier', badge: '👹', primaryColor: '#DA291C' },
+  { id: 'mcfc', name: 'Manchester City', leagueId: 'premier', sportsDbId: '133613', badge: 'https://r2.thesportsdb.com/images/media/team/badge/vwpvry1467462651.png', primaryColor: '#6CABDD' },
+  { id: 'afc', name: 'Arsenal FC', leagueId: 'premier', sportsDbId: '133604', badge: 'https://r2.thesportsdb.com/images/media/team/badge/uyhbfe1612467038.png', primaryColor: '#EF0107' },
+  { id: 'lfc', name: 'Liverpool FC', leagueId: 'premier', sportsDbId: '133602', badge: 'https://r2.thesportsdb.com/images/media/team/badge/kfaher1737969724.png', primaryColor: '#C8102E' },
+  { id: 'mufc', name: 'Manchester United', leagueId: 'premier', sportsDbId: '133612', badge: 'https://r2.thesportsdb.com/images/media/team/badge/xzqdr11517660252.png', primaryColor: '#DA291C' },
 
   // La Liga
-  { id: 'rmcf', name: 'Real Madrid CF', leagueId: 'laliga', badge: '👑', primaryColor: '#FEBE10' },
-  { id: 'fcb', name: 'FC Barcelona', leagueId: 'laliga', badge: '🔵🔴', primaryColor: '#004D98' },
-  { id: 'atm', name: 'Atlético de Madrid', leagueId: 'laliga', badge: '🔴⚪', primaryColor: '#CB3524' },
+  { id: 'rmcf', name: 'Real Madrid CF', leagueId: 'laliga', sportsDbId: '133738', badge: 'https://r2.thesportsdb.com/images/media/team/badge/vwvwrw1473502969.png', primaryColor: '#FEBE10' },
+  { id: 'fcb', name: 'FC Barcelona', leagueId: 'laliga', sportsDbId: '133739', badge: 'https://r2.thesportsdb.com/images/media/team/badge/wq9sir1639406443.png', primaryColor: '#004D98' },
+  { id: 'atm', name: 'Atlético de Madrid', leagueId: 'laliga', sportsDbId: '133729', badge: 'https://r2.thesportsdb.com/images/media/team/badge/0ulh3q1719984315.png', primaryColor: '#CB3524' },
 
   // Serie A
-  { id: 'inter', name: 'Inter de Milán', leagueId: 'seriea', badge: '⚫🔵', primaryColor: '#0053A0' },
-  { id: 'acm', name: 'AC Milan', leagueId: 'seriea', badge: '🔴⚫', primaryColor: '#FB090B' },
-  { id: 'juve', name: 'Juventus FC', leagueId: 'seriea', badge: '⚪⚫', primaryColor: '#000000' },
+  { id: 'inter', name: 'Inter de Milán', leagueId: 'seriea', sportsDbId: '133681', badge: 'https://r2.thesportsdb.com/images/media/team/badge/ryhu6d1617113103.png', primaryColor: '#0053A0' },
+  { id: 'acm', name: 'AC Milan', leagueId: 'seriea', sportsDbId: '133667', badge: 'https://r2.thesportsdb.com/images/media/team/badge/wvspur1448806617.png', primaryColor: '#FB090B' },
+  { id: 'juve', name: 'Juventus FC', leagueId: 'seriea', sportsDbId: '133676', badge: 'https://r2.thesportsdb.com/images/media/team/badge/uxf0gr1742983727.png', primaryColor: '#000000' },
 
   // Bundesliga
-  { id: 'bayern', name: 'Bayern Múnich', leagueId: 'bundesliga', badge: '🔴⚪', primaryColor: '#DC052D' },
-  { id: 'bvb', name: 'Borussia Dortmund', leagueId: 'bundesliga', badge: '🟡⚫', primaryColor: '#FDE100' },
-  { id: 'bayer', name: 'Bayer Leverkusen', leagueId: 'bundesliga', badge: '🔴⚫', primaryColor: '#E32219' },
+  { id: 'bayern', name: 'Bayern Múnich', leagueId: 'bundesliga', sportsDbId: '133664', badge: 'https://r2.thesportsdb.com/images/media/team/badge/01ogkh1716960412.png', primaryColor: '#DC052D' },
+  { id: 'bvb', name: 'Borussia Dortmund', leagueId: 'bundesliga', sportsDbId: '133650', badge: 'https://r2.thesportsdb.com/images/media/team/badge/tqo8ge1716960353.png', primaryColor: '#FDE100' },
+  { id: 'bayer', name: 'Bayer Leverkusen', leagueId: 'bundesliga', sportsDbId: '133666', badge: 'https://r2.thesportsdb.com/images/media/team/badge/3x9k851726760113.png', primaryColor: '#E32219' },
 
   // Ligue 1
-  { id: 'psg', name: 'Paris Saint-Germain', leagueId: 'ligue1', badge: '🔵🔴', primaryColor: '#004170' },
+  { id: 'psg', name: 'Paris Saint-Germain', leagueId: 'ligue1', sportsDbId: '133714', badge: 'https://r2.thesportsdb.com/images/media/team/badge/rwqrrq1473504808.png', primaryColor: '#004170' },
 
   // Liga Argentina
-  { id: 'boca', name: 'Boca Juniors', leagueId: 'lfp', badge: '🟦🟨', primaryColor: '#00457C' },
-  { id: 'river', name: 'River Plate', leagueId: 'lfp', badge: '⚪🔴', primaryColor: '#EB1C24' },
-  { id: 'racing', name: 'Racing Club', leagueId: 'lfp', badge: '🩵⚪', primaryColor: '#0085C9' }
+  { id: 'boca', name: 'Boca Juniors', leagueId: 'lfp', sportsDbId: '135156', badge: 'https://r2.thesportsdb.com/images/media/team/badge/bm7krb1775741582.png', primaryColor: '#00457C' },
+  { id: 'river', name: 'River Plate', leagueId: 'lfp', sportsDbId: '135171', badge: 'https://r2.thesportsdb.com/images/media/team/badge/03dmi31645539717.png', primaryColor: '#EB1C24' },
+  { id: 'racing', name: 'Racing Club', leagueId: 'lfp', sportsDbId: '135170', badge: 'https://r2.thesportsdb.com/images/media/team/badge/vi4mu41695734959.png', primaryColor: '#0085C9' }
 ];
 
 export const PLAYERS = [
