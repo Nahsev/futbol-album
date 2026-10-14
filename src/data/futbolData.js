@@ -86,6 +86,7 @@ export const PLAYERS = [
     id: 'p-vinicius',
     slotNumber: 3,
     name: 'Vinícius Jr',
+    apiName: 'Vinicius Junior',
     clubId: 'rmcf',
     leagueId: 'laliga',
     position: 'LW',

@@ -1,5 +1,6 @@
 import React from 'react';
 import { RARITIES } from '../data/rarities';
+import { useAlbum } from '../context/AlbumContext';
 import { TOTAL_SUPPLY, SERIAL_RANGES, formatSerial, formatFloat } from '../data/serials';
 import { Check, Lock, Plus, Coins } from 'lucide-react';
 
@@ -17,7 +18,9 @@ export default function CardSticker({
   showStats = true,
   size = 'normal'
 }) {
+  const album = useAlbum();
   if (!player) return null;
+  const photo = album?.getPhoto ? album.getPhoto(player) : player.image;
 
   const rarityInfo = RARITIES[cardRarity] || RARITIES.IRON;
   const isChallenger = cardRarity === 'CHALLENGER';
@@ -91,7 +94,7 @@ export default function CardSticker({
         {/* Photo Container */}
         <div className="relative my-1 flex-1 flex items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-gray-900/60">
           <img
-            src={player.image}
+            src={photo}
             alt={player.name}
             className="w-full h-full object-cover object-top hover:scale-110 transition-transform duration-500"
           />
@@ -174,7 +177,7 @@ export default function CardSticker({
       {/* Player Photo */}
       <div className="relative my-1 flex-1 flex items-center justify-center overflow-hidden rounded-xl border border-white/20 bg-gray-950/50">
         <img
-          src={player.image}
+          src={photo}
           alt={player.name}
           className="w-full h-full object-cover object-top hover:scale-110 transition-transform duration-500"
         />

@@ -53,6 +53,61 @@ async function ensureSeed(db) {
   seeded = true;
 }
 
+// ----------------------------------------------------------------------------
+// Fotos reales de jugadores (TheSportsDB), cacheadas en la colección player_photos
+const SPORTSDB = `https://www.thesportsdb.com/api/v1/json/${process.env.THESPORTSDB_KEY || '123'}`;
+const RETRY_MISSING_MS = 7 * 24 * 3600 * 1000;
+
+const normalize = s => (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z ]/g, ' ').split(/\s+/).filter(Boolean);
+
+// Acepta el resultado solo si los nombres coinciden de verdad (evita "Rodri" => "Jay Rodriguez")
+function namesMatch(query, candidate) {
+  const q = normalize(query), c = normalize(candidate);
+  if (!q.length || !c.length) return false;
+  const inQ = c.every(t => q.includes(t));
+  const inC = q.every(t => c.includes(t));
+  return inQ || inC;
+}
+
+async function lookupPhoto(player) {
+  const queries = [...new Set([player.apiName, player.name, normalize(player.name).join(' ')].filter(Boolean))];
+  for (const q of queries) {
+    try {
+      const res = await fetch(`${SPORTSDB}/searchplayers.php?p=${encodeURIComponent(q.replace(/ /g, '_'))}`, { signal: AbortSignal.timeout(5000) });
+      if (!res.ok) continue;
+      const data = await res.json();
+      const hit = (data.player || []).find(p =>
+        p.strSport === 'Soccer' && (p.strCutout || p.strThumb) && namesMatch(q, p.strPlayer)
+      );
+      if (hit) return { url: hit.strCutout || hit.strThumb, sportsDbId: hit.idPlayer, matchedName: hit.strPlayer };
+    } catch {
+      // timeout o error de red: probamos la siguiente variante
+    }
+  }
+  return { url: null };
+}
+
+async function getPhotos(db) {
+  const col = db.collection('player_photos');
+  const cached = Object.fromEntries((await col.find().toArray()).map(d => [d._id, d]));
+  const now = Date.now();
+  const pending = PLAYERS.filter(p => {
+    const c = cached[p.id];
+    return !c || (!c.url && now - new Date(c.checkedAt).getTime() > RETRY_MISSING_MS);
+  }).slice(0, 8); // de a poco para no pasarnos del límite de la API gratis
+
+  await Promise.all(pending.map(async p => {
+    const found = await lookupPhoto(p);
+    const doc = { name: p.name, ...found, checkedAt: new Date() };
+    await col.updateOne({ _id: p.id }, { $set: doc }, { upsert: true });
+    cached[p.id] = doc;
+  }));
+
+  const photos = {};
+  Object.entries(cached).forEach(([id, d]) => { if (d.url) photos[id] = d.url; });
+  return { photos, complete: pending.length === 0 };
+}
+
 const randomPlayer = () => PLAYERS[Math.floor(Math.random() * PLAYERS.length)];
 
 async function freeCounts(cards) {
@@ -223,6 +278,10 @@ const ACTIONS = {
     if (!owns) throw httpError(409, 'No tenés cartas de este jugador.');
     await db.collection('users').updateOne({ _id: userId }, { $set: { [`glued.${playerId}`]: true } });
     return { glued: true };
+  },
+
+  async photos(db) {
+    return getPhotos(db);
   },
 
   async daily(db, userId) {

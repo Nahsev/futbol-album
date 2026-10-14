@@ -22,6 +22,8 @@ export function AlbumProvider({ children }) {
   const [userId] = useState(getUserId);
   const [state, setState] = useState(null);
   const [apiError, setApiError] = useState(null);
+  // playerId -> URL de la foto real (TheSportsDB, cacheada en Atlas)
+  const [photos, setPhotos] = useState({});
 
   const call = useCallback(async (action, params = {}) => {
     const res = await fetch('/api/game', {
@@ -43,6 +45,26 @@ export function AlbumProvider({ children }) {
   useEffect(() => {
     call('state').catch(e => setApiError(e.message));
   }, [call]);
+
+  // Fotos: el servidor las busca de a tandas; pedimos de nuevo hasta tenerlas todas
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      for (let i = 0; i < 5 && !cancelled; i++) {
+        try {
+          const { photos: map, complete } = await call('photos');
+          if (cancelled) return;
+          setPhotos(map || {});
+          if (complete) return;
+        } catch {
+          return;
+        }
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [call]);
+
+  const getPhoto = useCallback(player => photos[player?.id] || player?.image, [photos]);
 
   const coins = state?.user.coins ?? 0;
   const gems = state?.user.gems ?? 0;
@@ -119,7 +141,8 @@ export function AlbumProvider({ children }) {
       resetCollection,
       getPlayerCards,
       getBestCard,
-      getBestCardRarity
+      getBestCardRarity,
+      getPhoto
     }}>
       {children}
     </AlbumContext.Provider>

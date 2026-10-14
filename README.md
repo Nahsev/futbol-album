@@ -22,6 +22,10 @@
 - Si en un sobre te toca un rango agotado, la carta se vuelve a tirar.
 - Vender una carta la devuelve a los sobres. Fusionar 3 del mismo rango da 1 del rango siguiente (si quedan libres).
 
+## Fotos de jugadores
+
+Las fotos reales salen de [TheSportsDB](https://www.thesportsdb.com) (clave gratis `123`). El servidor busca cada jugador por nombre, valida que el nombre coincida y guarda la URL en la colección `player_photos` de Atlas, así la API se consulta una sola vez. Si un jugador no aparece, se usa la foto genérica y se reintenta a la semana. Para forzar un nombre de búsqueda, agregá `apiName` al jugador en `src/data/futbolData.js`.
+
 ## Correr local
 
 ```bash

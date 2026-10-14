@@ -1,5 +1,6 @@
 // Real TheSports API Client for Football Teams & Player Photos
-const THESPORTSDB_BASE = 'https://www.thesportsdb.com/api/v1/json/3';
+// '123' es la clave pública gratuita actual (la vieja '3' devuelve datos de demo)
+const THESPORTSDB_BASE = 'https://www.thesportsdb.com/api/v1/json/123';
 
 // League IDs in TheSports API
 const LEAGUE_MAP = {
