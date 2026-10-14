@@ -12,6 +12,11 @@ export default async function handler(req, res) {
     res.status(200).json(out);
   } catch (e) {
     console.error(e);
-    res.status(e.status || 500).json({ error: e.status ? e.message : 'Error del servidor: ' + e.message });
+    let msg = e.status ? e.message : 'Error del servidor: ' + e.message;
+    // Atlas corta el TLS cuando la IP no está permitida en Network Access
+    if (/SSL alert number 80|tlsv1 alert internal error|Server selection timed out|ECONNREFUSED/i.test(e.message || '')) {
+      msg = 'No se pudo conectar a MongoDB Atlas: agregá 0.0.0.0/0 en Atlas → Network Access para permitir a Vercel.';
+    }
+    res.status(e.status || 500).json({ error: msg });
   }
 }
